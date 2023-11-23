@@ -1,7 +1,33 @@
 ﻿@page "/"
+@rendermode InteractiveServer
 
-<PageTitle>Home</PageTitle>
 
-<h1>Hello, world!</h1>
 
-Welcome to your new app.
+<PageTitle>Santa&apos;s List</PageTitle>
+
+<div class="position-absolute top-50 start-50 translate-middle p-4 glass">
+    <p>This component demonstrates showing data loaded from a backend API service.</p>
+
+    <EditForm Model="@Model" OnSubmit="@Submit" FormName="Prompt">
+        <InputText class="form-control" @bind-Value="Model!.IdentifiedGender" />
+        <InputNumber class="form-control" @bind-Value="Model!.Age" />
+        <InputText class="form-control" @bind-Value="Model!.Currency" />
+        <InputNumber class="form-control" @bind-Value="Model!.Budget" />
+    </EditForm>
+</div>
+
+@code {
+
+    [SupplyParameterFromForm]
+    public GiftSuggestionPrompt? Model { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        Model ??= new();
+    }
+
+    private void Submit()
+    {
+        
+    }
+}

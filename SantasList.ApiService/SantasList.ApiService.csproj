@@ -5,9 +5,15 @@
     <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <UserSecretsId>9035ffc5-ec8e-43f3-b138-073b4a0b6c97</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Azure.AI.OpenAI" Version="1.0.0-beta.9" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\SantasList.Domain\SantasList.Domain.csproj" />
     <ProjectReference Include="..\SantasList.ServiceDefaults\SantasList.ServiceDefaults.csproj" />
   </ItemGroup>
 

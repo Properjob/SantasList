@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
@@ -8,11 +8,14 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\SantasList.Domain\SantasList.Domain.csproj" />
     <ProjectReference Include="..\SantasList.ServiceDefaults\SantasList.ServiceDefaults.csproj" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Aspire.StackExchange.Redis.OutputCaching" Version="8.0.0-preview.1.23557.2" />
+    <PackageReference Include="Microsoft.FluentUI.AspNetCore.Components" Version="4.0.0" />
+    <PackageReference Include="Microsoft.FluentUI.AspNetCore.Components.Icons" Version="4.0.0" />
   </ItemGroup>
   
 </Project>

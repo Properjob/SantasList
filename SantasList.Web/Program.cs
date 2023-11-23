@@ -1,5 +1,6 @@
-using SantasList.Web;
+using Microsoft.FluentUI.AspNetCore.Components;
 using SantasList.Web.Components;
+using SantasList.Web.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,7 +12,11 @@ builder.AddRedisOutputCache("cache");
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 
-builder.Services.AddHttpClient<WeatherApiClient>(client=> client.BaseAddress = new("http://apiservice"));
+builder.Services.AddHttpClient();
+
+builder.Services.AddFluentUIComponents();
+
+builder.Services.AddHttpClient<GiftSuggestionApiClient>(client => client.BaseAddress = new("http://apiservice"));
 
 var app = builder.Build();
 
