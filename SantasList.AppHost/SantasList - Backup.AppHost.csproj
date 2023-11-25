@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
@@ -6,20 +6,16 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <IsAspireHost>true</IsAspireHost>
-    <UserSecretsId>82d96b6b-65e5-412d-a40c-737b9dc3c6d7</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\SantasList.ApiService\SantasList.ApiService.csproj" />
     <ProjectReference Include="..\SantasList.Web\SantasList.Web.csproj" />
-    <ProjectReference Include="..\SantasList.Worker\SantasList.Worker.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Aspire.Azure.Data.Tables" Version="8.0.0-preview.1.23557.2" />
     <PackageReference Include="Aspire.Azure.Storage.Queues" Version="8.0.0-preview.1.23557.2" />
     <PackageReference Include="Aspire.Hosting" Version="8.0.0-preview.1.23557.2" />
-    <PackageReference Include="Aspire.Hosting.Azure" Version="8.0.0-preview.1.23557.2" />
   </ItemGroup>
 
 </Project>

@@ -1,0 +1,43 @@
+﻿@page "/suggestions/{messageId}"
+@inject GiftSuggestionApiClient GiftSuggestionApiClient
+@attribute [StreamRendering(true)]
+@rendermode InteractiveServer
+
+<div class="mt-md-5 p-2 glass text-black fw-bold">
+    <h3>Suggestions</h3>
+
+    @if (GiftSuggestionStatus == null) {
+        <h3>Loading...</h3>
+    }
+    else {
+        <ul>
+            @foreach (var giftSuggestion in GiftSuggestionStatus.GiftSuggestions) {
+                <li>@giftSuggestion.Description</li>
+            }
+        </ul>
+    }
+</div>
+
+@code {
+    [Parameter]
+    public string? MessageId { get; set; }
+
+    public GiftSuggestionStatus? GiftSuggestionStatus { get; set; }
+
+    protected override void OnInitialized()
+    {
+        if (!string.IsNullOrEmpty(MessageId)) {
+            System.Timers.Timer t = new System.Timers.Timer();
+            t.Interval = 1000;
+            t.Start();
+
+            t.Elapsed += async (s, e) => {
+                GiftSuggestionStatus = await GiftSuggestionApiClient.GetAsync(MessageId);
+                if (GiftSuggestionStatus.Status == QueueStatus.Processed) {
+                    t.Stop();
+                }
+                await InvokeAsync(StateHasChanged);
+            };
+        }
+    }
+}

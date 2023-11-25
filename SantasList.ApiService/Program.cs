@@ -1,8 +1,15 @@
 using Azure;
 using Azure.AI.OpenAI;
-using SantasList.ApiService.Services;
 using SantasList.Domain.Services;
 using SantasList.Domain.Models;
+using Azure.Storage.Queues;
+using Microsoft.AspNetCore.Mvc;
+using System.Text.Json;
+using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.Mvc.Formatters;
+using System.Reflection.PortableExecutable;
+using Azure.Data.Tables;
+using SantasList.Infrastructure.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -27,6 +34,10 @@ builder.Services.AddScoped(sd => {
     return new OpenAIClient(proxyUrl, token);
 });
 
+
+builder.AddAzureQueueService("queue");
+builder.AddAzureTableService("table");
+
 builder.Services.AddScoped<IGiftSuggestionService, GiftSuggestionService>();
 
 var app = builder.Build();
@@ -34,24 +45,17 @@ var app = builder.Build();
 // Configure the HTTP request pipeline.
 app.UseExceptionHandler();
 
-app.MapGet("/suggestions", async (IGiftSuggestionService giftSuggestionService) =>
-{
-    var prompt = new GiftSuggestionPrompt() {
-        IdentifiedGender = "Man",
-        Age = 28,
-        Budget = 50,
-        Currency = "£",
-        Interests = ["Cars", "Minecraft", "Computers", "Programming"],
-    };
+app.MapPost("/suggestions/queue", async (IGiftSuggestionService giftSuggestionService, [FromBody] GiftSuggestionPrompt giftSuggestionPrompt) => {
+    var messageId = await giftSuggestionService.QueueAsync(giftSuggestionPrompt);
+    return Results.Accepted($"/suggestions/{messageId}");
+});
 
-    return await giftSuggestionService.GetSuggestionsAsync(prompt);
+app.MapGet("/suggestions/{messageId}", async (IGiftSuggestionService giftSuggestionService, string messageId) =>
+{
+    var status = await giftSuggestionService.GetAsync(messageId);
+    return Results.Ok(status);
 });
 
 app.MapDefaultEndpoints();
 
 app.Run();
-
-record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
-{
-    public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
-}

@@ -1,0 +1,62 @@
+﻿@page "/form"
+@using SantasList.Web.Models
+@inject GiftSuggestionApiClient GiftSuggestionApiClient
+@inject NavigationManager NavigationManager
+@rendermode InteractiveServer
+
+<PageTitle>Santa&apos;s List</PageTitle>
+
+
+<div class="mt-md-5 p-2 glass">
+    <EditForm Model="@Model" OnSubmit="@Submit" FormName="Prompt" class="d-flex flex-column gap-2">
+
+        <div class="d-flex flex-md-row flex-column gap-2">
+            <div class="d-flex flex-column gap-2 flex-grow-1" style="flex-basis: 0">
+                <FluentTextField @bind-Value="Model!.IdentifiedGender" Label="Gender" />
+                <FluentNumberField @bind-Value="Model!.Age" Label="Age (years)" />
+                <FluentSelect Label="Currency" Items="@Currencies" @bind-Value="Model!.Currency" OptionText="@(i => i.CurrencyName)" OptionValue="@(i => i.ISOCurrencySymbol)" Height="200px" />
+                <FluentNumberField @bind-Value="Model!.Budget" Label="Budget" />
+            </div>
+            <div class="d-flex flex-column gap-2 flex-grow-1" style="flex-basis: 0">
+                <FluentTextField @bind-Value="Model!.Interest1" Label="Interest 1" />
+                <FluentTextField @bind-Value="Model!.Interest2" Label="Interest 2" />
+                <FluentTextField @bind-Value="Model!.Interest3" Label="Interest 3" />
+                <FluentTextField @bind-Value="Model!.Interest4" Label="Interest 4" />
+            </div>
+        </div>
+
+        <FluentButton Appearance="Appearance.Accent" Type="ButtonType.Submit">Give me suggestions</FluentButton>
+    </EditForm>
+</div>
+
+@code {
+
+    [SupplyParameterFromForm]
+    public GiftSuggestionForm? Model { get; set; }
+
+    public IEnumerable<Currency> Currencies { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        var region = new RegionInfo(CultureInfo.CurrentCulture.Name);
+
+        Model ??= new() { Currency = region.ISOCurrencySymbol };
+
+        Currencies = CultureInfo.GetCultures(CultureTypes.SpecificCultures)
+            .Select(ci => ci.Name).Distinct()
+            .Select(id => new RegionInfo(id))
+            .GroupBy(r => r.ISOCurrencySymbol)
+            .Select(g => g.First())
+            .Select(r => new Currency() {
+                    ISOCurrencySymbol = r.ISOCurrencySymbol,
+                    CurrencyName = r.CurrencyEnglishName,
+                }).OrderBy(c => c.ISOCurrencySymbol);
+    }
+
+    private async Task Submit()
+    {
+        var location = await GiftSuggestionApiClient.PostAsync(Model!);
+
+        NavigationManager.NavigateTo(location);
+    }
+}

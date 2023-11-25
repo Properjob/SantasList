@@ -9,5 +9,9 @@ namespace SantasList.Domain.Services;
 
 public interface IGiftSuggestionService
 {
-    Task<IEnumerable<GiftSuggestion>> GetSuggestionsAsync(GiftSuggestionPrompt giftSuggestionPrompt);
+    Task<string> QueueAsync(GiftSuggestionPrompt giftSuggestionPrompt);
+
+    Task<GiftSuggestionStatus> GetAsync(string messageId);
+
+    Task<IEnumerable<GiftSuggestion>> ProcessAsync(GiftSuggestionPrompt giftSuggestionPrompt);
 }
